@@ -9,6 +9,33 @@ This is a Hard problem on Leetcode.
 using std::vector;
 using std::cout;
 using std::endl;
+using std::max;
+
+class Solution2 {
+public:
+    int trap(vector<int>& height, bool log_it = false) {
+        int maxWater = 0;
+        int maxLeftWall = 0;
+        int maxRightWall = 0;
+        vector<int>::iterator leftWall = height.begin();
+        vector<int>::iterator rightWall = height.end() - 1;
+
+        while (leftWall < rightWall) {
+
+            if (*leftWall <= *rightWall) {
+                maxWater += max(0, maxLeftWall - *leftWall);
+                maxLeftWall = max(maxLeftWall, *leftWall);
+                ++leftWall;
+            } else {
+                maxWater += max(0, maxRightWall - *rightWall);
+                maxRightWall = max(maxRightWall, *rightWall);
+                --rightWall;
+            }
+        }
+
+        return maxWater;
+    }
+};
 
 class Solution {
 public:
