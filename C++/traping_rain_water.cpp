@@ -115,7 +115,7 @@ int main(){
     // Expected: 23
 
     height = {6,4,2,0,3,2,0,3,1,4,5,3,2,7,5,3,0,1,2,1,3,4,6,8,1,3};
-    water_trapped = sol.trap(height, true);
+    water_trapped = sol.trap(height, false);
     cout << water_trapped << endl;
     // Expected: 83
 
