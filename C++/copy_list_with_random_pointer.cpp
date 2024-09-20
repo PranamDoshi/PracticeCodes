@@ -125,6 +125,40 @@ public:
         customReturnType customResult = recursivelyCopyRandomList(head);
         return customResult.node_attr;
     }
+
+    // Optimized
+    Node* cloneLinkedList(Node* head) {
+  
+        // Map to store new nodes corresponding to
+        // their original nodes
+        nodeMap mp;
+        Node *curr = head;
+    
+        // Traverse original linked list to store new 
+        // nodes corresponding to original linked list
+        while (curr != NULL) {
+            mp[curr] = new Node(curr->val);
+            curr = curr->next;
+        }
+        
+        curr = head;
+        
+        // Loop to update the next and random pointers 
+        // of new nodes 
+        while (curr != NULL) {
+            
+            // Update the next pointer of new node
+            mp[curr]->next = mp[curr->next];
+        
+            // Update the random pointer of new node
+            mp[curr]->random = mp[curr->random];
+        
+            curr = curr->next;
+        }
+    
+        // Return the head of the clone
+        return mp[head];
+    }
 };
 
 int main(){
@@ -147,7 +181,7 @@ int main(){
 
     sol.print_linked_list_with_random_pointer(head);
 
-    Node* new_head = sol.copyRandomList(head);
+    Node* new_head = sol.cloneLinkedList(head);
 
     sol.print_linked_list_with_random_pointer(new_head);
 
