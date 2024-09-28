@@ -4,8 +4,8 @@ https://leetcode.com/problems/merge-k-sorted-lists/description/
 
 #include<iostream>
 #include<vector>
-#include<map>
-#include<deque>
+// #include<map>
+// #include<deque>
 
 using std::cout;
 using std::vector;
@@ -30,92 +30,148 @@ class Solution{
             cout << endl;
         }
 
-        void heapify(std::deque<ListNode*>& tempList){
-            int index = tempList.size()-1;
-            int parentIndex = (index-1)/2;
-            int temp;
-            while(index >= 0 && parentIndex >= 0 && tempList[index]->val < tempList[parentIndex]->val){
-                temp = tempList[parentIndex]->val;
-                tempList[parentIndex]->val = tempList[index]->val;
-                tempList[index]->val = temp;
-                index = parentIndex;
-                parentIndex = (index-1)/2;
-            }
-        }
+        // void heapify(std::deque<ListNode*>& tempList){
+        //     int index = tempList.size()-1;
+        //     int parentIndex = (index-1)/2;
+        //     int temp;
+        //     while(index >= 0 && parentIndex >= 0 && tempList[index]->val < tempList[parentIndex]->val){
+        //         temp = tempList[parentIndex]->val;
+        //         tempList[parentIndex]->val = tempList[index]->val;
+        //         tempList[index]->val = temp;
+        //         index = parentIndex;
+        //         parentIndex = (index-1)/2;
+        //     }
+        // }
 
-        void printHeap(std::deque<ListNode*> heap){
-            for(const auto& node:heap){
-                if(node){
-                    std::cout << node->val << " , ";
+        // void printHeap(std::deque<ListNode*> heap){
+        //     for(const auto& node:heap){
+        //         if(node){
+        //             std::cout << node->val << " , ";
+        //         }
+        //         else{
+        //             std::cout << "null , ";
+        //         }
+        //     }
+        //     std::cout << "\n";
+        // }
+
+        // ListNode* popRoot(std::deque<ListNode*>& minHeap, int index=0){
+        //     // printHeap(minHeap);
+        //     // std::cout << "Popping index " << index << " from above heap\n";
+        //     ListNode* temp;
+        //     if(index >= minHeap.size()){
+        //         return nullptr;
+        //     }
+        //     ListNode* lastRoot = minHeap[index];
+        //     int leftIndex, rightIndex;
+
+        //     if(minHeap[index] != nullptr){
+        //         // std::cout << "Value at index " << index << " is " << lastRoot->val << "\n";
+        //         leftIndex = (2*index)+1;
+        //         rightIndex = leftIndex+1;
+
+        //         if(leftIndex < minHeap.size() && minHeap[leftIndex] != nullptr && rightIndex < minHeap.size() && minHeap[rightIndex] != nullptr){
+        //             // std::cout << "Comparing " << minHeap[leftIndex]->val << " and " << minHeap[rightIndex]->val << "\n";
+        //             if(minHeap[leftIndex]->val <= minHeap[rightIndex]->val){
+        //                 minHeap[index] = popRoot(minHeap, leftIndex);
+        //             }
+        //             else{
+        //                 minHeap[index] = popRoot(minHeap, rightIndex);
+        //             }
+        //             return lastRoot;
+        //         }
+        //         else if(leftIndex < minHeap.size() && minHeap[leftIndex] == nullptr && rightIndex < minHeap.size() && minHeap[rightIndex] == nullptr){
+        //             // std::cout << "This Node has no childs!\n";
+        //             minHeap[index] = nullptr;
+        //             return lastRoot;
+        //         }
+        //         else if(leftIndex < minHeap.size()){
+        //             if(minHeap[leftIndex] == nullptr){
+        //                 // std::cout << "Left child at index " << rightIndex << " is null\n";
+        //                 minHeap[index] = popRoot(minHeap, rightIndex);
+        //             }
+        //             else{
+        //                 // std::cout << "Left child at index " << rightIndex << " is not null\n";
+        //                 minHeap[index] = popRoot(minHeap, leftIndex);
+        //             }
+        //             return lastRoot;
+        //         }
+        //         else if(rightIndex < minHeap.size()){
+        //             if(minHeap[rightIndex] == nullptr){
+        //                 // std::cout << "Right child at index " << leftIndex << " is null\n";
+        //                 minHeap[index] = popRoot(minHeap, leftIndex);
+        //             }
+        //             else{
+        //                 // std::cout << "Right child at index " << rightIndex << " is not null\n";
+        //                 minHeap[index] = popRoot(minHeap, rightIndex);
+        //             }
+        //             return lastRoot;
+        //         }
+        //         else{
+        //             minHeap[index] = nullptr;
+        //             return lastRoot;
+        //         }
+        //     }
+        //     else{
+        //         return nullptr;
+        //     }
+
+        // }
+
+        ListNode* performMergeSort(ListNode*& leftPointer, ListNode*& rightPointer){
+            ListNode* dummy = new ListNode(-1);
+            ListNode* temp=dummy;
+
+            while(leftPointer != nullptr && rightPointer != nullptr){
+                if(leftPointer->val < rightPointer->val){
+                    temp->next = leftPointer;
+                    temp = temp->next;
+                    leftPointer = leftPointer->next;
                 }
                 else{
-                    std::cout << "null , ";
+                    temp->next = rightPointer;
+                    temp = temp->next;
+                    rightPointer = rightPointer->next;
                 }
             }
-            std::cout << "\n";
+            while(leftPointer){
+                temp->next = leftPointer;
+                temp = temp->next;
+                leftPointer = leftPointer->next;
+            }
+            while(rightPointer){
+                temp->next = rightPointer;
+                temp = temp->next;
+                rightPointer = rightPointer->next;
+            }
+
+            return dummy->next;
         }
 
-        ListNode* popRoot(std::deque<ListNode*>& minHeap, int index=0){
-            // printHeap(minHeap);
-            // std::cout << "Popping index " << index << " from above heap\n";
-            ListNode* temp;
-            if(index >= minHeap.size()){
-                return nullptr;
+        ListNode* findMid(ListNode*& head){
+            ListNode* slowPointer = head;
+            ListNode* fastPointer = head->next;
+            while(fastPointer && fastPointer->next){
+                slowPointer = slowPointer->next;
+                fastPointer = fastPointer->next->next;
             }
-            ListNode* lastRoot = minHeap[index];
-            int leftIndex, rightIndex;
+            return slowPointer;
+        }
 
-            if(minHeap[index] != nullptr){
-                // std::cout << "Value at index " << index << " is " << lastRoot->val << "\n";
-                leftIndex = (2*index)+1;
-                rightIndex = leftIndex+1;
-
-                if(leftIndex < minHeap.size() && minHeap[leftIndex] != nullptr && rightIndex < minHeap.size() && minHeap[rightIndex] != nullptr){
-                    // std::cout << "Comparing " << minHeap[leftIndex]->val << " and " << minHeap[rightIndex]->val << "\n";
-                    if(minHeap[leftIndex]->val <= minHeap[rightIndex]->val){
-                        minHeap[index] = popRoot(minHeap, leftIndex);
-                    }
-                    else{
-                        minHeap[index] = popRoot(minHeap, rightIndex);
-                    }
-                    return lastRoot;
-                }
-                else if(leftIndex < minHeap.size() && minHeap[leftIndex] == nullptr && rightIndex < minHeap.size() && minHeap[rightIndex] == nullptr){
-                    // std::cout << "This Node has no childs!\n";
-                    minHeap[index] = nullptr;
-                    return lastRoot;
-                }
-                else if(leftIndex < minHeap.size()){
-                    if(minHeap[leftIndex] == nullptr){
-                        // std::cout << "Left child at index " << rightIndex << " is null\n";
-                        minHeap[index] = popRoot(minHeap, rightIndex);
-                    }
-                    else{
-                        // std::cout << "Left child at index " << rightIndex << " is not null\n";
-                        minHeap[index] = popRoot(minHeap, leftIndex);
-                    }
-                    return lastRoot;
-                }
-                else if(rightIndex < minHeap.size()){
-                    if(minHeap[rightIndex] == nullptr){
-                        // std::cout << "Right child at index " << leftIndex << " is null\n";
-                        minHeap[index] = popRoot(minHeap, leftIndex);
-                    }
-                    else{
-                        // std::cout << "Right child at index " << rightIndex << " is not null\n";
-                        minHeap[index] = popRoot(minHeap, rightIndex);
-                    }
-                    return lastRoot;
-                }
-                else{
-                    minHeap[index] = nullptr;
-                    return lastRoot;
-                }
-            }
-            else{
-                return nullptr;
+        ListNode* mergeSort(ListNode*& head){
+            if(!head || !head->next){
+                return head;
             }
 
+            ListNode* mid = findMid(head);
+
+            ListNode* leftHead = head;
+            ListNode* rightHead = mid->next;
+            mid->next = nullptr;
+            ListNode* left = mergeSort(leftHead);
+            ListNode* right = mergeSort(rightHead);
+
+            return performMergeSort(left, right);
         }
 
         ListNode* mergeKLists(vector<ListNode*>& lists){
@@ -194,46 +250,78 @@ class Solution{
             // return newHead;
 
             /*Approach 2: Use min heap to reduce the time complexity */
-            ListNode* temp;
-            std::deque<ListNode*> minHeap = {};
+            // ListNode* temp;
+            // std::deque<ListNode*> minHeap = {};
 
+            // for(int i=0;i<lists.size();i++){
+            //     if(!lists[i]){
+            //         continue;
+            //     }
+            //     else{
+            //         temp = lists[i];
+            //         while(temp){
+            //             minHeap.push_back(temp);
+            //             heapify(minHeap);
+            //             temp = temp->next;
+            //             // printHeap(minHeap);
+            //         }
+            //     }
+            // }
+
+            // // printHeap(minHeap);
+            // ListNode* newHead = nullptr;
+            // ListNode* prev = nullptr;
+
+            // while(true){
+            //     temp = popRoot(minHeap);
+            //     if(!temp){
+            //         break;
+            //     }
+            //     temp->next = nullptr;
+            //     // std::cout << "Popped from the heep: " << temp->val << "\n";
+            //     if(!newHead){
+            //         newHead = temp;
+            //         prev = newHead;
+            //     }
+            //     else{
+            //         prev->next=temp;
+            //         prev=prev->next;
+            //     }
+            // }
+
+            // return newHead;
+
+            /*Approach 3: Merges all the lists O(n^2), Uses Slow-Fast Pointers to find a middle of the list O((n^2)/2) and Uses merge sort for sorting O(n^2) */
+            ListNode* prevPointer = nullptr;
+            ListNode* tempPointer = nullptr;
+            ListNode* startPointer = nullptr;
             for(int i=0;i<lists.size();i++){
-                if(!lists[i]){
-                    continue;
-                }
-                else{
-                    temp = lists[i];
-                    while(temp){
-                        minHeap.push_back(temp);
-                        heapify(minHeap);
-                        temp = temp->next;
-                        // printHeap(minHeap);
+                tempPointer = lists[i];
+                while(tempPointer != nullptr){
+                    // Sets the first non-null node as the starting pointer.
+                    if(!startPointer && tempPointer){
+                        startPointer = tempPointer;
                     }
+                    if(!prevPointer){
+                        prevPointer = tempPointer;
+                    }
+                    else{
+                        prevPointer->next = tempPointer;
+                        prevPointer = prevPointer->next;
+                    }
+                    tempPointer = tempPointer->next;
                 }
             }
 
-            // printHeap(minHeap);
-            ListNode* newHead = nullptr;
-            ListNode* prev = nullptr;
+            // If there is No or just one node return the start pointer itself.
+            // if(!startPointer || !startPointer->next){
+            //     return startPointer;
+            // }
+            // printLinkeList(startPointer);
 
-            while(true){
-                temp = popRoot(minHeap);
-                if(!temp){
-                    break;
-                }
-                temp->next = nullptr;
-                // std::cout << "Popped from the heep: " << temp->val << "\n";
-                if(!newHead){
-                    newHead = temp;
-                    prev = newHead;
-                }
-                else{
-                    prev->next=temp;
-                    prev=prev->next;
-                }
-            }
-
-            return newHead;
+            // Finds the centre of the linked list
+            // At the end of below loop fastPointer will be nullptr, prePointer will be the centre node and slowPointer will be the node after centre node.
+            return mergeSort(startPointer);
         }
 };
 
