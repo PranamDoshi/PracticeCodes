@@ -29,11 +29,11 @@ class Net(nn.Module):
         If you started with MNIST’s 28×28, the size wouldn’t match unless you changed kernel sizes, strides, or fully connected input dimensions.
     """
 
-    def __init__(self, learning_rate: float):
+    def __init__(self, learning_rate: float, momentum: float = 0.9):
         super(Net, self).__init__()
         # 1 input image channel, 6 output channels, 5x5 square convolution
         # kernel
-        self.conv1 = nn.Conv2d(1, 6, 5)
+        self.conv1 = nn.Conv2d(3, 6, 5)
         self.conv2 = nn.Conv2d(6, 16, 5)
 
         # an affine operation: y = Wx + b
@@ -42,6 +42,7 @@ class Net(nn.Module):
         self.fc3 = nn.Linear(84, 10)
 
         self.learning_rate = learning_rate
+        self.momentum = momentum
 
         self.create_optimizer()
 
@@ -81,18 +82,19 @@ class Net(nn.Module):
 
         return output
     
-    def calculate_loss(self, input):
+    def calculate_loss(self, input, target = None):
         output = self.__call__(input)
-        target = torch.rand_like(output)  # a dummy target, for example
+        if target is None:
+            target = torch.rand_like(output)  # a dummy target, for example
 
         # target = target.view(1, -1)  # make it the same shape as output
         # print(target.size())
         # print(output.size())
 
-        criterion = nn.MSELoss()
+        criterion = nn.CrossEntropyLoss()
 
         loss = criterion(output, target)
-        print(loss)
+        # print(loss)
 
         return loss
 
@@ -103,30 +105,34 @@ class Net(nn.Module):
     def backward(self, loss):
         # self.zero_grad()     # zeroes the gradient buffers of all parameters
 
-        print('conv1.bias.grad before backward')
-        print(self.conv1.bias.grad)
+        # print('conv1.bias.grad before backward')
+        # print(self.conv1.bias.grad)
 
         loss.backward()
 
-        print('conv1.bias.grad after backward')
-        print(self.conv1.bias.grad)
+        # print('conv1.bias.grad after backward')
+        # print(self.conv1.bias.grad)
 
     def apply_gredient_decent(self):
         for f in self.parameters():
             f.data.sub_(f.grad.data * self.learning_rate)
 
     def create_optimizer(self):
-        self.optimizer = optim.SGD(self.parameters(), lr=self.learning_rate)
+        self.optimizer = optim.SGD(self.parameters(), lr=self.learning_rate, momentum=self.momentum)
 
     def run(self, input):
-        out = net(input)
-        print(out)
+        return self.__call__(input)
 
-    def training_step(self, input):
+    def training_step(self, input, target=None):
         self.optimizer.zero_grad()   # zero the gradient buffers
-        loss = self.calculate_loss(input)
+        loss = self.calculate_loss(input, target=target)
         self.backward(loss)
         self.optimizer.step()    # Does the update
+
+        return loss
+    
+    def load_weights(self, weights_path):
+        self.load_state_dict(torch.load(weights_path, weights_only=True))
 
 if __name__ == "__main__":
     net = Net(learning_rate=0.01)
@@ -141,8 +147,8 @@ if __name__ == "__main__":
 
     print("\n------------------------------------\n")
 
-    input = torch.randn(1, 1, 32, 32)
-    net.run(input)
+    input = torch.randn(1, 3, 32, 32)
+    print(net.run(input))
 
     print("\n------------------------------------\n")
 
@@ -153,9 +159,9 @@ if __name__ == "__main__":
     # net.training_step(input)
 
     for _ in range(100):
-        temp_input = torch.randn(32, 1, 32, 32)
+        temp_input = torch.randn(32, 3, 32, 32)
         net.training_step(temp_input)
 
     print("\n------------------------------------\n")
 
-    net.run(input)
+    print(net.run(input))
