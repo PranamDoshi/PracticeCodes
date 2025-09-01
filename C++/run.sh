@@ -1,25 +1,27 @@
 #!/bin/bash
 
-# Check if the correct number of arguments is provided
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <path_to_cpp_file>"
+# Check if at least one argument is provided
+if [ "$#" -lt 1 ]; then
+    echo "Usage: $0 <main_cpp_file> [other_cpp_files...]"
     exit 1
 fi
 
-# Get the file path from the command-line arguments
-cpp_file=$1
-echo "Running $cpp_file"
+# The first argument is the main file
+main_cpp_file=$1
+shift  # shift arguments left, now "$@" contains only the additional .cpp files
 
-# Check if the file exists and is a .cpp file
-if [[ ! -f "$cpp_file" || "${cpp_file##*.}" != "cpp" ]]; then
-    echo "Error: File does not exist or is not a .cpp file."
+# Check if the main file exists and is a .cpp file
+if [[ ! -f "$main_cpp_file" || "${main_cpp_file##*.}" != "cpp" ]]; then
+    echo "Error: Main file does not exist or is not a .cpp file."
     exit 1
 fi
 
-# Compile the .cpp file using g++
-output_file="${cpp_file%.*}.exe"
-echo "Application file: $output_file"
-g++ "$cpp_file" -o "$output_file"
+# Build the output file name based on main cpp file
+output_file="${main_cpp_file%.*}.exe"
+
+# Compile the main file + all other .cpp files passed as arguments
+echo "Compiling: $main_cpp_file $@"
+g++ "$main_cpp_file" "$@" -o "$output_file"
 
 # Check if the compilation was successful
 if [ $? -ne 0 ]; then
@@ -28,4 +30,5 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run the compiled executable
+echo "Running: $output_file"
 "./$output_file"
