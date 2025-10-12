@@ -26,6 +26,17 @@ vector<int> generateRandomNumsArray(int size, int min = 0, int max = std::numeri
     return randomVector;
 }
 
+vector<vector<int>> generateRandomNums2DArray(int width, int height, int min = 0, int max = std::numeric_limits<int>::max()){
+    vector<vector<int>> random2DVector(width);
+    vector<int> randomVector(height);
+
+    for(int w=0; w<width; w++){
+        randomVector = generateRandomNumsArray(height, min, max);
+        random2DVector.push_back(randomVector);
+    }
+    return random2DVector;
+}
+
 void mergeSortMerge(vector<int>& arr, int left, int mid, int right){
     int a1 = mid - left + 1, a2 = right - mid;
 

@@ -7,5 +7,6 @@ std::vector<int> generateRandomNumsArray(int size, int min = 0, int max = std::n
 int generateRandomNumber(int min = 0, int max = std::numeric_limits<int>::max());
 void mergeSort(std::vector<int>& arr, int left, int right);
 void printArray(std::vector<int> arr);
+std::vector<std::vector<int>> generateRandomNums2DArray(int width, int height, int min = 0, int max = std::numeric_limits<int>::max());
 
 #endif
