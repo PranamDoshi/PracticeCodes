@@ -20,6 +20,9 @@ n = 4
 (()(()))
 
 (((())))
+
+To run this file:
+bash run.sh LeetCode_Top100_Liked/generate_parentheses.cpp LeetCode_Top100_Liked/utils.cpp
 */
 #include<iostream>
 #include<vector>

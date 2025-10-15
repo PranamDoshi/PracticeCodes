@@ -1,5 +1,8 @@
 /*
 https://leetcode.com/problems/combination-sum/description/?envType=study-plan-v2&envId=top-100-liked
+
+To run this file:
+bash run.sh LeetCode_Top100_Liked/combination_sum.cpp LeetCode_Top100_Liked/utils.cpp
 */
 #include<iostream>
 
