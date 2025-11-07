@@ -32,3 +32,5 @@ fi
 # Run the compiled executable
 echo "Running: $output_file"
 "./$output_file"
+
+rm -r $output_file
